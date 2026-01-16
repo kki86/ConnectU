@@ -245,7 +245,7 @@ void addFriendship(User* requester, User* target) {
     target->addFriend(requester);
     cout << "\n[SUCCESS] You are now friends with @" << target->username << endl;
 }
-
+//Edit
 // TODO: LAB 5 - Breadth First Search
 void recommendFriends(User* startUser) {
     cout << "\n[GRAPH ANALYSIS] Finding friends of friends..." << endl;
