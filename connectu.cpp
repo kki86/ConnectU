@@ -50,7 +50,10 @@ public:
 
     // Task: Add a new post to the FRONT of the list (O(1))
     void addPost(int pid, int uid, string content, int likes, long time) {
-        // TODO: LAB 1
+        Post* newPost = new Post(pid, uid, content, likes, time);
+        //Add head at front
+        newPost->next = head;  
+        head = newPost;
 
 
     }
@@ -58,7 +61,12 @@ public:
     void printTimeline() {
         Post* current = head;
         if (!current) { cout << "  (No posts yet)" << endl; return; }
-        
+        while (current != nullptr) {
+            cout << "  > [ID: " << current->postId << "] "
+                 << current->content
+                 << " (" << current->likes << " likes)" << endl;
+            current = current->next;
+        }
         // Task: Traverse the linked list and print content
         // TODO: LAB 1
 
