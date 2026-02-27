@@ -166,25 +166,50 @@ private:
     static const int TABLE_SIZE = 10007; 
     HashNode** table;
 
-    unsigned long hashFunction(string key) {
-        // TODO: LAB 2
-        return 0; 
-    }
+    unsigned long hashFunction(const string& key) {
+        // h = (h * base + char) % table size
+        const unsigned long base = 31;
+        unsigned long h = 0;
 
+        for (unsigned char c : key) {
+            h = (h * base + c) % TABLE_SIZE;
+        }
+        return h;
+    }
+    
 public:
     UserMap() {
         table = new HashNode*[TABLE_SIZE];
         for (int i = 0; i < TABLE_SIZE; i++) table[i] = nullptr;
     }
 
-    void put(string key, User* user) { /* TODO: LAB 2 */ }
+    void put(const string& key, User* user) {
+        unsigned long idx = hashFunction(key);
 
-    User* get(string key) {
-        // --- TEMPORARY FALLBACK FOR LAB 1 ---
-        for(User* u : allUsers) {
-            if (u->username == key) return u;
+        // if key exists, update value
+        HashNode* curr = table[idx];
+        while (curr != nullptr) {
+            if (curr->key == key) {
+                curr->value = user;
+                return;
+            }
+            curr = curr->next;
         }
-        // TODO: LAB 2 - REPLACE ABOVE WITH HASH LOOKUP
+
+        // insert new node at front of chain
+        HashNode* newNode = new HashNode(key, user);
+        newNode->next = table[idx];
+        table[idx] = newNode;
+    }
+
+    User* get(const string& key) {
+        unsigned long idx = hashFunction(key);
+
+        HashNode* curr = table[idx];
+        while (curr != nullptr) {
+            if (curr->key == key) return curr->value;
+            curr = curr->next;
+        }
         return nullptr;
     }
 };
