@@ -37,8 +37,9 @@ struct Post {
         : postId(pid), userId(uid), content(txt), likes(lk), timestamp(time), next(nullptr) {}
         
     // TODO: LAB 3 - Implement Scoring Logic
-    double getScore() {
-        return 0.0; 
+      double getScore() {
+        double hoursOld = difftime(time(0), timestamp) / 3600.0;
+        return (likes * 10.0) + (1000.0 / (hoursOld + 1.0)); 
     }
 };
 
@@ -141,15 +142,68 @@ private:
     Post* heap[1000]; 
     int size;
 
-    void heapifyDown(int index) { /* TODO: LAB 3 */ }
-    void heapifyUp(int index) { /* TODO: LAB 3 */ }
+    void heapifyDown(int index) {
+        while (true) {
+            int left = 2 * index + 1;
+            int right = 2 * index + 2;
+            int largest = index;
+
+            if (left < size && heap[left]->getScore() > heap[largest]->getScore()) {
+                largest = left;
+            }
+
+            if (right < size && heap[right]->getScore() > heap[largest]->getScore()) {
+                largest = right;
+            }
+
+            if (largest == index) break;
+
+            swap(heap[index], heap[largest]);
+            index = largest;
+        }
+    }
+
+    void heapifyUp(int index) {
+        while (index > 0) {
+            int parent = (index - 1) / 2;
+
+            if (heap[index]->getScore() > heap[parent]->getScore()) {
+                swap(heap[index], heap[parent]);
+                index = parent;
+            } else {
+                break;
+            }
+        }
+    }
 
 public:
     FeedHeap() : size(0) {}
-    void push(Post* p) { /* TODO: LAB 3 */ }
-    Post* popMax() { return nullptr; /* TODO: LAB 3 */ }
+    void push(Post* p) {
+        if (size >= 1000) 
+            return;  
+        heap[size] = p;
+        heapifyUp(size);
+        size++;
+    }
+
+    Post* popMax() {
+        if (size == 0) 
+            return nullptr;
+
+        Post* maxPost = heap[0];
+        heap[0] = heap[size - 1];
+        size--;
+
+        if (size > 0) {
+            heapifyDown(0);
+        }
+
+        return maxPost;
+    }
+
     bool isEmpty() { return size == 0; }
 };
+
 
 vector<User*> allUsers;
 
