@@ -350,8 +350,22 @@ void addFriendship(User* requester, User* target) {
 //Edit
 // TODO: LAB 5 - Breadth First Search
 void recommendFriends(User* startUser) {
-    cout << "\n[GRAPH ANALYSIS] Finding friends of friends..." << endl;
-    // TODO: LAB 5
+    cout << "\nFriend Recommendations:\n";
+
+    set<int> visited;
+    visited.insert(startUser->userId);
+    for (User* f : startUser->friends) {
+        visited.insert(f->userId);
+    }
+
+    for (User* f : startUser->friends) {
+        for (User* ff : f->friends) {
+            if (visited.find(ff->userId) == visited.end()) {
+                cout << ff->username << endl;
+                visited.insert(ff->userId); // avoid duplicate
+            }
+        }
+    }
 }
 
 // ==========================================
